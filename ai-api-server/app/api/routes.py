@@ -21,8 +21,6 @@ def api_root():
 def health():
     return {"ok": True}
 
-router = APIRouter()
-
 @router.post("/summarize", response_model=SummarizeResponse)
 def summarize(req: SummarizeRequest):
     result = summarize_text(req.text)
