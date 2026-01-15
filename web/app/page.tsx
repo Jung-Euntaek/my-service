@@ -3,6 +3,8 @@
 import { useState } from "react";
 
 export default function Home() {
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
+  
   const [text, setText] = useState("");
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -14,11 +16,12 @@ export default function Home() {
     setResult(null);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/summarize", {
+      const res = await fetch(`${API_BASE_URL}/api/summarize`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       });
+
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
