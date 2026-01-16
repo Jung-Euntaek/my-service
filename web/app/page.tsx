@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Home() {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
@@ -40,6 +41,10 @@ export default function Home() {
   return (
     <main className="min-h-screen p-8 max-w-3xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">AI 요약 도구</h1>
+
+      <Link className="underline" href="/history">
+        History 보기 →
+      </Link>
 
       <textarea
         className="w-full border rounded p-3 h-40"
