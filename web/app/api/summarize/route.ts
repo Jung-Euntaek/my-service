@@ -1,7 +1,12 @@
-import { NextResponse } from "next/server";
-
 export async function POST(req: Request) {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL!;
+  const base = process.env.API_BASE_URL; // ✅ 서버 전용
+  if (!base) {
+    return new Response(
+      JSON.stringify({ detail: "API_BASE_URL is not set" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
   const body = await req.json();
 
   const res = await fetch(`${base}/api/summarize`, {
@@ -10,8 +15,8 @@ export async function POST(req: Request) {
     body: JSON.stringify(body),
   });
 
-  const text = await res.text(); // 에러도 그대로 전달
-  return new NextResponse(text, {
+  const text = await res.text();
+  return new Response(text, {
     status: res.status,
     headers: { "Content-Type": res.headers.get("content-type") ?? "application/json" },
   });
