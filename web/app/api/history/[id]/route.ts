@@ -6,7 +6,13 @@ export async function GET(
 ) {
   const { id } = await params;
 
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL!;
+  const base = process.env.API_BASE_URL;
+  if (!base) {
+    return new Response(
+      JSON.stringify({ detail: "API_BASE_URL is not set" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  };
   const res = await fetch(`${base}/api/history/${id}`, { cache: "no-store" });
 
   const data = await res.json().catch(() => ({}));
