@@ -2,21 +2,21 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const { id } = await params;
 
-  if (!base) {
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL!;
+  const res = await fetch(`${base}/api/history/${id}`, { cache: "no-store" });
+
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
     return NextResponse.json(
-      { detail: "NEXT_PUBLIC_API_BASE_URL is not set" },
-      { status: 500 }
+      { detail: data?.detail ?? `HTTP ${res.status}` },
+      { status: res.status }
     );
   }
 
-  const res = await fetch(`${base}/api/history/${params.id}`, {
-    method: "GET",
-  });
-
-  const data = await res.json().catch(() => ({}));
-  return NextResponse.json(data, { status: res.status });
+  return NextResponse.json(data);
 }
