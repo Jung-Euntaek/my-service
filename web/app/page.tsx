@@ -4,14 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 
 export default function Home() {
-  const base = process.env.API_BASE_URL;
-  if (!base) {
-    return new Response(
-      JSON.stringify({ detail: "API_BASE_URL is not set" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
-  };
-
   const [text, setText] = useState("");
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -29,16 +21,15 @@ export default function Home() {
         body: JSON.stringify({ text }),
       });
 
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
         throw new Error(data?.detail ?? `HTTP ${res.status}`);
       }
 
-      const data = await res.json();
       setResult(data.result);
     } catch (e: any) {
-      setError(e.message ?? "요청 실패");
+      setError(e?.message ?? "요청 실패");
     } finally {
       setLoading(false);
     }
